@@ -28,7 +28,7 @@ jobs:
       - name: Build
         run: |
           $version = "${{ github.ref_name }}".TrimStart("v") + ".0"
-          dotnet build NaviHonorific/NaviHonorific.csproj -c Release -p:Version=$version
+          dotnet build NaviHonorific/NaviHonorific.csproj -c Release -p:Platform=x64 -p:Version=$version
 
       - uses: actions/upload-artifact@v4
         with:
