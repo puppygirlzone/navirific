@@ -123,14 +123,15 @@ public class ConfigWindow : Window
         Help("If you listen on more than one device, put the client name here (e.g. Feishin, Symfonium) " +
              "and only that one counts. Leave it empty to use whatever you played most recently.");
 
-        var poll = Config.PollMs;
-        if (ImGui.SliderInt("Check every", ref poll, NowPlayingWatcher.MinPollMs, 10000, "%d ms"))
+        // Slider works in half-second steps; nobody needs 1337 ms.
+        var steps = Math.Clamp((int)Math.Round(Config.PollMs / 500.0), 1, 20);
+        if (ImGui.SliderInt("Check every", ref steps, 1, 20, $"{steps * 0.5:0.0} s"))
         {
-            Config.PollMs = Math.Max(NowPlayingWatcher.MinPollMs, poll);
+            Config.PollMs = steps * 500;
             plugin.SettingsChanged();
         }
         Help("Lower = title changes sooner after you skip a song. It's one tiny request each time, " +
-             "so 1000-2000 ms is fine even on a home server.");
+             "so 1-2 seconds is fine even on a home server.");
     }
 
     private void DrawTitle()
