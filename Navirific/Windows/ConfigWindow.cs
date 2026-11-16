@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
-using NaviHonorific.Navidrome;
+using Navirific.Navidrome;
 
-namespace NaviHonorific.Windows;
+namespace Navirific.Windows;
 
 public class ConfigWindow : Window
 {
@@ -21,7 +21,7 @@ public class ConfigWindow : Window
     // Typed into here, copied to Config when you click out of the box.
     private string url = "", user = "", pass = "", filter = "";
 
-    public ConfigWindow(Plugin plugin) : base("NaviHonorific###NaviHonorificConfig")
+    public ConfigWindow(Plugin plugin) : base("Navirific###NavirificConfig")
     {
         this.plugin = plugin;
         SizeConstraints = new WindowSizeConstraints

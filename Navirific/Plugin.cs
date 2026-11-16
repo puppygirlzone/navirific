@@ -4,9 +4,9 @@ using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using NaviHonorific.Windows;
+using Navirific.Windows;
 
-namespace NaviHonorific;
+namespace Navirific;
 
 public sealed class Plugin : IDalamudPlugin
 {
@@ -18,14 +18,14 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static IChatGui Chat { get; private set; } = null!;
     [PluginService] internal static IPluginLog Log { get; private set; } = null!;
 
-    private const string Command = "/navihonorific";
-    private const string ShortCommand = "/nhon";
+    private const string Command = "/navirific";
+    private const string ShortCommand = "/nrf";
 
     public Config Config { get; }
     public NowPlayingWatcher Watcher { get; }
     public HonorificTitle Title { get; }
 
-    private readonly WindowSystem windows = new("NaviHonorific");
+    private readonly WindowSystem windows = new("Navirific");
     private readonly ConfigWindow configWindow;
 
     private int appliedRevision = -1;
@@ -123,7 +123,7 @@ public sealed class Plugin : IDalamudPlugin
     {
         Config.Enabled = on;
         SettingsChanged(repoll: true);
-        Chat.Print(on ? "Now showing your Navidrome track." : "Stopped. Title cleared.", "NaviHonorific");
+        Chat.Print(on ? "Now showing your Navidrome track." : "Stopped. Title cleared.", "Navirific");
     }
 
     public void Dispose()

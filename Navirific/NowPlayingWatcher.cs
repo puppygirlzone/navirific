@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NaviHonorific.Navidrome;
+using Navirific.Navidrome;
 
-namespace NaviHonorific;
+namespace Navirific;
 
 // Runs off the game thread. Plugin.OnUpdate picks up Current from here.
 public sealed class NowPlayingWatcher : IDisposable

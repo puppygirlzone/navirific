@@ -28,12 +28,12 @@ jobs:
       - name: Build
         run: |
           $version = "${{ github.ref_name }}".TrimStart("v") + ".0"
-          dotnet build NaviHonorific/NaviHonorific.csproj -c Release -p:Platform=x64 -p:Version=$version
+          dotnet build Navirific/Navirific.csproj -c Release -p:Platform=x64 -p:Version=$version
 
       - uses: actions/upload-artifact@v4
         with:
           name: plugin
-          path: NaviHonorific/bin/x64/Release/NaviHonorific/latest.zip
+          path: Navirific/bin/x64/Release/Navirific/latest.zip
           if-no-files-found: error
 
   release:

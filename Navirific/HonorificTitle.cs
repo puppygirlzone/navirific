@@ -4,9 +4,9 @@ using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Dalamud.Plugin.Ipc;
-using NaviHonorific.Navidrome;
+using Navirific.Navidrome;
 
-namespace NaviHonorific;
+namespace Navirific;
 
 // Framework thread only.
 public sealed class HonorificTitle : IDisposable

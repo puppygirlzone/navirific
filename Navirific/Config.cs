@@ -2,7 +2,7 @@ using System;
 using System.Numerics;
 using Dalamud.Configuration;
 
-namespace NaviHonorific;
+namespace Navirific;
 
 [Serializable]
 public class Config : IPluginConfiguration

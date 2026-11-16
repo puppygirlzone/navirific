@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NaviHonorific.Navidrome;
+namespace Navirific.Navidrome;
 
 public record Track(string Id, string Title, string Artist, string Album, int? Year, string Player, string User, int MinutesAgo);
 
@@ -17,7 +17,7 @@ public class SubsonicException(string message) : Exception(message);
 public sealed class SubsonicClient : IDisposable
 {
     private const string ApiVersion = "1.16.1";
-    private const string ClientName = "NaviHonorific";
+    private const string ClientName = "Navirific";
 
     private readonly HttpClient http;
 

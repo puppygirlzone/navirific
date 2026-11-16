@@ -25,11 +25,11 @@ There's already [SpotifyHonorific](https://github.com/Valiice/SpotifyHonorific) 
    ```
 
 3. Tick the box next to it, then **Save and Close**.
-4. Open `/xlplugins`, search for **NaviHonorific** and install it.
+4. Open `/xlplugins`, search for **Navirific** and install it.
 
 ## Setup
 
-Type `/navihonorific` (or `/nhon` if that's too long) to open the settings.
+Type `/navirific` (or `/nrf` if that's too long) to open the settings.
 
 1. Put in your Navidrome URL, username and password. Same details you use for the web UI.
 2. Hit **Test connection**. You want a green "Connected!".
@@ -54,9 +54,9 @@ Honorific won't show titles over 32 characters, so anything longer gets cut and 
 
 ## Commands
 
-- `/navihonorific` opens settings
-- `/navihonorific on`, `off` or `toggle` switches it without opening the window
-- `/nhon` does the same as all of the above
+- `/navirific` opens settings
+- `/navirific on`, `off` or `toggle` switches it without opening the window
+- `/nrf` does the same as all of the above
 
 ## Speed
 
@@ -66,7 +66,7 @@ None of this runs on the game thread, so a slow server won't stutter anything. I
 
 ## Known weirdness
 
-Pausing doesn't clear the title. Navidrome has no idea you paused, only that a song started, and it keeps it in "now playing" until it times out. `/nhon off` if you want it gone right now.
+Pausing doesn't clear the title. Navidrome has no idea you paused, only that a song started, and it keeps it in "now playing" until it times out. `/nrf off` if you want it gone right now.
 
 If the settings window says you're playing something but your nameplate's empty, check Honorific is actually enabled. The window shows a red warning when it can't find it.
 
@@ -76,7 +76,7 @@ Getting "Wrong username or password" when it's definitely right? If you log in t
 
 ## Privacy
 
-Your password is stored in your Dalamud plugin config folder (`pluginConfigs/NaviHonorific.json`) as plain text, the same way every other plugin stores settings. It's never sent as-is: each request uses the Subsonic salted token login. Still, use `https://` if your server is outside your house.
+Your password is stored in your Dalamud plugin config folder (`pluginConfigs/Navirific.json`) as plain text, the same way every other plugin stores settings. It's never sent as-is: each request uses the Subsonic salted token login. Still, use `https://` if your server is outside your house.
 
 Nothing is sent anywhere except your own Navidrome server.
 
@@ -88,7 +88,7 @@ You need the .NET 10 SDK and Dalamud's dev files (XIVLauncher installs those for
 dotnet build -c Release
 ```
 
-The plugin ends up in `NaviHonorific/bin/x64/Release/`. To load it without the repo, add that folder's `NaviHonorific.dll` under **Dev Plugin Locations** in `/xlsettings` → **Experimental**.
+The plugin ends up in `Navirific/bin/x64/Release/`. To load it without the repo, add that folder's `Navirific.dll` under **Dev Plugin Locations** in `/xlsettings` → **Experimental**.
 
 Releases are done by pushing a `v1.2.3` tag. GitHub Actions builds it, makes the release and updates `repo.json`.
 
