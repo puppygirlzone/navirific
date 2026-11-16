@@ -3,7 +3,7 @@
     "Author": "puppygirlzone",
     "Name": "NaviHonorific",
     "InternalName": "NaviHonorific",
-    "AssemblyVersion": "1.0.1.0",
+    "AssemblyVersion": "1.0.2.0",
     "Punchline": "Show what you're playing on Navidrome as your Honorific title.",
     "Description": "Watches your Navidrome server for the song you're listening to and sets it as your title through Honorific. Needs Honorific installed. Settings: /navihonorific",
     "ApplicableVersion": "any",
@@ -24,6 +24,6 @@
     "DownloadLinkInstall": "https://github.com/puppygirlzone/navirific/releases/latest/download/latest.zip",
     "DownloadLinkUpdate": "https://github.com/puppygirlzone/navirific/releases/latest/download/latest.zip",
     "DownloadLinkTesting": "https://github.com/puppygirlzone/navirific/releases/latest/download/latest.zip",
-    "LastUpdate": 1794825501
+    "LastUpdate": 1794825923
   }
 ]
