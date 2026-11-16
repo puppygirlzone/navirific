@@ -8,7 +8,13 @@
     "Description": "Watches your Navidrome server for the song you're listening to and sets it as your title through Honorific. Needs Honorific installed. Settings: /navihonorific",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/puppygirlzone/navirific",
-    "Tags": ["navidrome", "subsonic", "music", "honorific", "title"],
+    "Tags": [
+      "navidrome",
+      "subsonic",
+      "music",
+      "honorific",
+      "title"
+    ],
     "DalamudApiLevel": 15,
     "LoadRequiredState": 0,
     "LoadSync": false,
@@ -18,6 +24,6 @@
     "DownloadLinkInstall": "https://github.com/puppygirlzone/navirific/releases/latest/download/latest.zip",
     "DownloadLinkUpdate": "https://github.com/puppygirlzone/navirific/releases/latest/download/latest.zip",
     "DownloadLinkTesting": "https://github.com/puppygirlzone/navirific/releases/latest/download/latest.zip",
-    "LastUpdate": 0
+    "LastUpdate": 1794825281
   }
 ]
