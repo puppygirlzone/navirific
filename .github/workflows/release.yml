@@ -1,0 +1,65 @@
+name: release
+
+# Push a tag like v1.2.0 and this builds it, makes a GitHub release with
+# latest.zip, and bumps repo.json so Dalamud sees the update.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Get Dalamud
+        run: |
+          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile latest.zip
+          Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
+
+      - name: Build
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart("v") + ".0"
+          dotnet build NaviHonorific/NaviHonorific.csproj -c Release -p:Version=$version
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plugin
+          path: NaviHonorific/bin/x64/Release/NaviHonorific/latest.zip
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: plugin
+
+      - name: Make the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" latest.zip --title "${{ github.ref_name }}" --generate-notes
+
+      - name: Bump repo.json
+        run: |
+          version="${GITHUB_REF_NAME#v}.0"
+          jq --arg v "$version" --argjson t "$(date +%s)" \
+            '.[0].AssemblyVersion = $v | .[0].LastUpdate = $t' repo.json > repo.tmp
+          mv repo.tmp repo.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "repo.json: $version" || exit 0
+          git push origin main

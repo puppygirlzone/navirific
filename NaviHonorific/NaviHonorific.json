@@ -1,0 +1,10 @@
+{
+  "Author": "puppygirlzone",
+  "Name": "NaviHonorific",
+  "InternalName": "NaviHonorific",
+  "Punchline": "Show what you're playing on Navidrome as your Honorific title.",
+  "Description": "Watches your Navidrome server for the song you're listening to and sets it as your title through Honorific. Needs Honorific installed. Settings: /navihonorific",
+  "RepoUrl": "https://github.com/puppygirlzone/navirific",
+  "ApplicableVersion": "any",
+  "Tags": ["navidrome", "subsonic", "music", "honorific", "title"]
+}

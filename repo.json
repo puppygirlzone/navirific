@@ -1,0 +1,23 @@
+[
+  {
+    "Author": "puppygirlzone",
+    "Name": "NaviHonorific",
+    "InternalName": "NaviHonorific",
+    "AssemblyVersion": "1.0.0.0",
+    "Punchline": "Show what you're playing on Navidrome as your Honorific title.",
+    "Description": "Watches your Navidrome server for the song you're listening to and sets it as your title through Honorific. Needs Honorific installed. Settings: /navihonorific",
+    "ApplicableVersion": "any",
+    "RepoUrl": "https://github.com/puppygirlzone/navirific",
+    "Tags": ["navidrome", "subsonic", "music", "honorific", "title"],
+    "DalamudApiLevel": 15,
+    "LoadRequiredState": 0,
+    "LoadSync": false,
+    "CanUnloadAsync": false,
+    "LoadPriority": 0,
+    "AcceptsFeedback": true,
+    "DownloadLinkInstall": "https://github.com/puppygirlzone/navirific/releases/latest/download/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/puppygirlzone/navirific/releases/latest/download/latest.zip",
+    "DownloadLinkTesting": "https://github.com/puppygirlzone/navirific/releases/latest/download/latest.zip",
+    "LastUpdate": 0
+  }
+]
