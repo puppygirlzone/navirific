@@ -13,8 +13,7 @@ public record Track(string Id, string Title, string Artist, string Album, int? Y
 
 public class SubsonicException(string message) : Exception(message);
 
-// Just enough of the Subsonic API to ask "what is this user playing right now".
-// Navidrome speaks it at /rest/, which saves us the JWT dance of its native API.
+// Subsonic API rather than Navidrome's own, since that one wants a JWT.
 public sealed class SubsonicClient : IDisposable
 {
     private const string ApiVersion = "1.16.1";

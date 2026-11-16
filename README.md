@@ -35,22 +35,13 @@ Type `/navihonorific` (or `/nhon` if that's too long) to open the settings.
 2. Hit **Test connection**. You want a green "Connected!".
 3. Play something. The status line at the top should show it, and so should your nameplate.
 
-That's it. Every setting applies the moment you change it, no reloading the plugin or restarting the game.
+You never need to reload the plugin or restart the game for a setting to apply. Server details kick in when you click out of the box, everything else as you change it. Hover the (?) next to a setting if it's not obvious what it does.
 
-## Settings
+If Navidrome lives on a subpath, include it in the URL (`https://example.com/navidrome`).
 
-| Setting | What it does |
-|---|---|
-| Show my Navidrome track as my title | The on/off switch. Off clears your title straight away. |
-| Server URL | Where Navidrome lives, e.g. `https://music.example.com`. If it's on a subpath, include it (`https://example.com/navidrome`). |
-| Username / Password | Your normal Navidrome login. |
-| Only from player | If you play on more than one device, type the client name (Feishin, Symfonium...) and only that one counts. Empty means whatever played most recently. |
-| Check every | How often to ask Navidrome. Default is 1500 ms, lowest is 500 ms. |
-| Template | What the title says. `{title}`, `{artist}`, `{album}` and `{year}` get swapped in. |
-| Prefix | Show the title above your name instead of below. |
-| Text colour / Glow colour | Tick the box to use it, untick to fall back to Honorific's default. |
+## Templates
 
-Some template ideas:
+`{title}`, `{artist}`, `{album}` and `{year}` get swapped in. A few I like:
 
 ```
 {title}
@@ -61,24 +52,27 @@ listening to {artist}
 
 Honorific won't show titles over 32 characters, so anything longer gets cut and ends in `...`. Short templates work best.
 
-### Commands
+## Commands
 
 - `/navihonorific` opens settings
 - `/navihonorific on`, `off` or `toggle` switches it without opening the window
 - `/nhon` does the same as all of the above
 
-## How fast is it?
+## Speed
 
-It asks Navidrome "what's playing for me?" every 1.5 seconds by default. The request is tiny and the connection is kept open between checks, so on a home server each check takes a few milliseconds. Skip a song and your title usually catches up within a second or two.
+By default it asks Navidrome what you're playing every 1.5 seconds (you can go down to 0.5). The request is tiny and the connection stays open between checks, so on a home server it's a few milliseconds each time. Skip a song and the title catches up within a second or two.
 
-The polling happens off the game thread, so a slow or dead server won't stutter your game. If Navidrome drops out for a moment, your current title stays up instead of blinking off.
+None of this runs on the game thread, so a slow server won't stutter anything. If the server drops out, the current title stays up for 30 seconds before it gives up and clears.
 
-## Things that might trip you up
+## Known weirdness
 
-- **Pausing doesn't clear the title.** Navidrome doesn't know about pause, only "this started playing". The song stays in its now-playing list until it times out, so your title hangs around for a bit too. Use `/nhon off` if you want it gone now.
-- **Nothing shows up, but the status says it's playing.** Make sure Honorific itself is enabled. The settings window says so in red if it can't find it.
-- **Other people can't see it.** Honorific titles are local unless the other person has Honorific too and you're synced through something like Mare/Lightless. Same as any other Honorific title.
-- **"Wrong username or password"** with the right password: if you log in to Navidrome through a reverse proxy or SSO, this plugin can't get through that. It needs a normal Navidrome account.
+Pausing doesn't clear the title. Navidrome has no idea you paused, only that a song started, and it keeps it in "now playing" until it times out. `/nhon off` if you want it gone right now.
+
+If the settings window says you're playing something but your nameplate's empty, check Honorific is actually enabled. The window shows a red warning when it can't find it.
+
+Other people only see it if they have Honorific too and you're synced through something like Lightless. Same as any Honorific title.
+
+Getting "Wrong username or password" when it's definitely right? If you log in through a reverse proxy or SSO, the plugin can't get past that. It needs a normal Navidrome account.
 
 ## Privacy
 
@@ -98,20 +92,6 @@ The plugin ends up in `NaviHonorific/bin/x64/Release/`. To load it without the r
 
 Releases are done by pushing a `v1.2.3` tag. GitHub Actions builds it, makes the release and updates `repo.json`.
 
-## Layout
-
-```
-NaviHonorific/
-  Plugin.cs              commands, framework hook, wiring
-  Config.cs              saved settings
-  NowPlayingWatcher.cs   background polling loop
-  HonorificTitle.cs      Honorific IPC and the template
-  Navidrome/
-    SubsonicClient.cs    the two Subsonic calls we need (ping, getNowPlaying)
-  Windows/
-    ConfigWindow.cs      the settings window
-repo.json                custom repo for Dalamud
-```
 
 ## Licence
 

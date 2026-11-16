@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -7,7 +8,7 @@ using NaviHonorific.Navidrome;
 
 namespace NaviHonorific;
 
-// Talks to Honorific. Everything in here has to run on the framework thread.
+// Framework thread only.
 public sealed class HonorificTitle : IDisposable
 {
     // Honorific rejects anything longer than this.
@@ -15,7 +16,7 @@ public sealed class HonorificTitle : IDisposable
 
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
-        IncludeFields = true, // Vector3's X/Y/Z are fields
+        IncludeFields = true,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
@@ -27,6 +28,7 @@ public sealed class HonorificTitle : IDisposable
     // What we last sent. null means "we haven't set anything", which is
     // different from "we cleared it".
     private string? sent;
+    private DateTime retryAt;
 
     public HonorificTitle()
     {
@@ -43,7 +45,7 @@ public sealed class HonorificTitle : IDisposable
 
     public bool HonorificAvailable => setTitle.HasAction;
 
-    public bool InSync => sent != null;
+    public bool InSync => sent != null || DateTime.UtcNow < retryAt;
 
     public string? Showing { get; private set; }
 
@@ -72,6 +74,7 @@ public sealed class HonorificTitle : IDisposable
             // Honorific went away between the HasAction check and now. Ready will kick us.
             Plugin.Log.Verbose($"Honorific IPC failed: {e.Message}");
             sent = null;
+            retryAt = DateTime.UtcNow.AddSeconds(2);
         }
     }
 
@@ -92,8 +95,15 @@ public sealed class HonorificTitle : IDisposable
             .Replace("{year}", t.Year?.ToString() ?? "", StringComparison.OrdinalIgnoreCase)
             .Trim();
 
+        // Cut on whole characters so we don't chop an emoji in half.
         if (s.Length > MaxLength)
-            s = s[..(MaxLength - 3)].TrimEnd() + "...";
+        {
+            var cut = 0;
+            var e = StringInfo.GetTextElementEnumerator(s);
+            while (e.MoveNext() && e.ElementIndex + e.GetTextElement().Length <= MaxLength - 3)
+                cut = e.ElementIndex + e.GetTextElement().Length;
+            s = s[..cut].TrimEnd() + "...";
+        }
 
         return s;
     }

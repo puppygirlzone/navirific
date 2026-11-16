@@ -18,6 +18,9 @@ public class ConfigWindow : Window
 
     private Task<string?>? test;
 
+    // Typed into here, copied to Config when you click out of the box.
+    private string url = "", user = "", pass = "", filter = "";
+
     public ConfigWindow(Plugin plugin) : base("NaviHonorific###NaviHonorificConfig")
     {
         this.plugin = plugin;
@@ -28,6 +31,14 @@ public class ConfigWindow : Window
         };
         Size = new Vector2(460, 560);
         SizeCondition = ImGuiCond.FirstUseEver;
+    }
+
+    public override void OnOpen()
+    {
+        url = Config.ServerUrl;
+        user = Config.Username;
+        pass = Config.Password;
+        filter = Config.PlayerFilter;
     }
 
     public override void Draw()
@@ -75,27 +86,23 @@ public class ConfigWindow : Window
 
     private void DrawServer()
     {
-        // Connection details only take effect once you leave the field, so we
-        // aren't hammering the server with half-typed URLs.
-        var url = Config.ServerUrl;
-        if (ImGui.InputTextWithHint("Server URL", "https://music.example.com", ref url, 512))
-            Config.ServerUrl = url.Trim();
-        if (ImGui.IsItemDeactivatedAfterEdit()) plugin.SettingsChanged(repoll: true);
+        // Don't poll half-typed URLs.
+        ImGui.InputTextWithHint("Server URL", "https://music.example.com", ref url, 512);
+        if (ImGui.IsItemDeactivatedAfterEdit()) CommitConnection();
 
-        var user = Config.Username;
-        if (ImGui.InputText("Username", ref user, 128))
-            Config.Username = user.Trim();
-        if (ImGui.IsItemDeactivatedAfterEdit()) plugin.SettingsChanged(repoll: true);
+        ImGui.InputText("Username", ref user, 128);
+        if (ImGui.IsItemDeactivatedAfterEdit()) CommitConnection();
 
-        var pass = Config.Password;
-        if (ImGui.InputText("Password", ref pass, 256, ImGuiInputTextFlags.Password))
-            Config.Password = pass;
-        if (ImGui.IsItemDeactivatedAfterEdit()) plugin.SettingsChanged(repoll: true);
+        ImGui.InputText("Password", ref pass, 256, ImGuiInputTextFlags.Password);
+        if (ImGui.IsItemDeactivatedAfterEdit()) CommitConnection();
 
         var busy = test is { IsCompleted: false };
         if (busy) ImGui.BeginDisabled();
         if (ImGui.Button("Test connection"))
+        {
+            CommitConnection();
             test = plugin.Watcher.TestConnection(Config.ServerUrl, Config.Username, Config.Password);
+        }
         if (busy) ImGui.EndDisabled();
 
         if (test != null)
@@ -111,10 +118,8 @@ public class ConfigWindow : Window
 
         ImGui.Spacing();
 
-        var filter = Config.PlayerFilter;
-        if (ImGui.InputTextWithHint("Only from player", "any", ref filter, 128))
-            Config.PlayerFilter = filter;
-        if (ImGui.IsItemDeactivatedAfterEdit()) plugin.SettingsChanged(repoll: true);
+        ImGui.InputTextWithHint("Only from player", "any", ref filter, 128);
+        if (ImGui.IsItemDeactivatedAfterEdit()) CommitConnection();
         Help("If you listen on more than one device, put the client name here (e.g. Feishin, Symfonium) " +
              "and only that one counts. Leave it empty to use whatever you played most recently.");
 
@@ -183,6 +188,15 @@ public class ConfigWindow : Window
             Config.UseGlow = true;
             plugin.SettingsChanged();
         }
+    }
+
+    private void CommitConnection()
+    {
+        Config.ServerUrl = url.Trim();
+        Config.Username = user.Trim();
+        Config.Password = pass;
+        Config.PlayerFilter = filter.Trim();
+        plugin.SettingsChanged(repoll: true);
     }
 
     private static void Help(string text)

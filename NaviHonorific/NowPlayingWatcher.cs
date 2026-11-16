@@ -6,22 +6,26 @@ using NaviHonorific.Navidrome;
 
 namespace NaviHonorific;
 
-// Polls Navidrome on a background task. Never touches game state itself;
-// it just publishes Current and lets the framework thread pick it up.
+// Runs off the game thread. Plugin.OnUpdate picks up Current from here.
 public sealed class NowPlayingWatcher : IDisposable
 {
     public const int MinPollMs = 500;
 
+    // How long a dead server gets before we give up on the last song.
+    private static readonly TimeSpan GiveUpAfter = TimeSpan.FromSeconds(30);
+
     private readonly Config config;
     private readonly SubsonicClient client = new();
     private readonly CancellationTokenSource stop = new();
-    private CancellationTokenSource wake = new();
+    private volatile CancellationTokenSource wake = new();
     private readonly Task loop;
 
     public Track? Current { get; private set; }
     public string? LastError { get; private set; }
     public DateTime LastPoll { get; private set; }
     public TimeSpan LastLatency { get; private set; }
+
+    private DateTime? failingSince;
 
     // Bumped every time Current changes, so the title side can do a cheap int compare.
     public int Revision => revision;
@@ -60,9 +64,15 @@ public sealed class NowPlayingWatcher : IDisposable
         while (!stop.IsCancellationRequested)
         {
             if (config.Enabled && config.IsConfigured)
+            {
                 await PollOnce();
+            }
             else
+            {
                 SetTrack(null);
+                LastError = null;
+                failingSince = null;
+            }
 
             var delay = Math.Max(MinPollMs, config.PollMs);
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(stop.Token, wake.Token);
@@ -88,6 +98,7 @@ public sealed class NowPlayingWatcher : IDisposable
             var entries = await client.NowPlaying(config.ServerUrl, config.Username, config.Password, stop.Token);
             LastLatency = DateTime.UtcNow - started;
             LastError = null;
+            failingSince = null;
 
             var filter = config.PlayerFilter.Trim();
             var mine = entries
@@ -103,8 +114,12 @@ public sealed class NowPlayingWatcher : IDisposable
         }
         catch (Exception e)
         {
-            // Keep the last track up through a blip rather than flickering the title off.
+            // Ride out short blips so the title doesn't flicker, but don't leave
+            // a song up forever if the server's actually gone.
             LastError = Describe(e);
+            failingSince ??= DateTime.UtcNow;
+            if (DateTime.UtcNow - failingSince > GiveUpAfter)
+                SetTrack(null);
             Plugin.Log.Debug($"Navidrome poll failed: {LastError}");
         }
         finally
@@ -132,7 +147,12 @@ public sealed class NowPlayingWatcher : IDisposable
     public void Dispose()
     {
         stop.Cancel();
-        try { loop.Wait(TimeSpan.FromSeconds(2)); } catch { }
+        var finished = false;
+        try { finished = loop.Wait(TimeSpan.FromSeconds(2)); } catch { finished = true; }
+
+        // If the loop is somehow still going, let the GC have these instead of
+        // pulling them out from under it.
+        if (!finished) return;
         stop.Dispose();
         wake.Dispose();
         client.Dispose();
